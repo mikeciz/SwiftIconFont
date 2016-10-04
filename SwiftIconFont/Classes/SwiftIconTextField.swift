@@ -6,10 +6,14 @@
 //  Copyright © 2016 Sedat Gökbek ÇİFTÇİ. All rights reserved.
 //
 
-import UIKit
-
-class SwiftIconTextField: UITextField {
-    override func awakeFromNib() {
-        self.parseIcon()
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+    
+    class SwiftIconTextField: UITextField {
+        override func awakeFromNib() {
+            self.parseIcon()
+        }
     }
-}
+#endif

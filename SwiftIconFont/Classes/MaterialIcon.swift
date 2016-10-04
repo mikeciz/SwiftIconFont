@@ -6,7 +6,11 @@
 //  Copyright © 2016 Sedat Gökbek ÇİFTÇİ. All rights reserved.
 //
 
-import UIKit
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+#endif
 
 public let materialIconArr: [String: String] = [
     "3d.rotation":"\u{e84d}",

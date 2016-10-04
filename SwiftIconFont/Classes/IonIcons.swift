@@ -6,7 +6,11 @@
 //  Copyright © 2016 Sedat Gokbek Ciftci. All rights reserved.
 //
 
-import UIKit
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+#endif
 
 public let ioniconArr: [String: String] = [
     "alert":"\u{f101}",

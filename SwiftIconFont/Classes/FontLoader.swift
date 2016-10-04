@@ -6,8 +6,6 @@
 //  Copyright © 2016 Sedat Gokbek Ciftci. All rights reserved.
 //
 
-import UIKit
-import Foundation
 import CoreText
 
 class FontLoader: NSObject {

@@ -6,18 +6,21 @@
 //  Copyright © 2016 Sedat Gökbek ÇİFTÇİ. All rights reserved.
 //
 
-import UIKit
-
-@IBDesignable
-class SwiftBarButtonItem: UIBarButtonItem {
-    @IBInspectable var Icon: String = ""
-    @IBInspectable var FontSize: CGFloat = 15.00
-
-    override func awakeFromNib() {
-        parseIcon()
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+    @IBDesignable
+    class SwiftBarButtonItem: UIBarButtonItem {
+        @IBInspectable var Icon: String = ""
+        @IBInspectable var FontSize: CGFloat = 15.00
+        
+        override func awakeFromNib() {
+            parseIcon()
+        }
+        
+        fileprivate func parseIcon() {
+            self.icon(from: GetFontTypeWithSelectedIcon(Icon), code: GetIconIndexWithSelectedIcon(Icon), ofSize: FontSize)
+        }
     }
-
-    fileprivate func parseIcon() {
-        self.icon(from: GetFontTypeWithSelectedIcon(Icon), code: GetIconIndexWithSelectedIcon(Icon), ofSize: FontSize)
-    }
-}
+#endif

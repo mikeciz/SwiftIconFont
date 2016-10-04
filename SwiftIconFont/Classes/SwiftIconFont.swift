@@ -6,7 +6,11 @@
 //  Copyright © 2016 Sedat Gokbek Ciftci. All rights reserved.
 //
 
-import UIKit
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+#endif
 
 public enum Fonts: String {
     case FontAwesome = "FontAwesome"
@@ -37,42 +41,46 @@ public enum Fonts: String {
     }
     
 }
-public extension UIFont{
-    
-    static func icon(from font: Fonts, ofSize size: CGFloat) -> UIFont {
-        let fontName = font.rawValue
-        if (UIFont.fontNames(forFamilyName: font.fontName).count == 0)
-        {
-            /*
-            dispatch_once(&token) {
+
+#if os(macOS)
+#else
+    public extension UIFont{
+        
+        static func icon(from font: Fonts, ofSize size: CGFloat) -> UIFont {
+            let fontName = font.rawValue
+            if (UIFont.fontNames(forFamilyName: font.fontName).count == 0)
+            {
+                /*
+                 dispatch_once(&token) {
+                 FontLoader.loadFont(fontName)
+                 }
+                 */
                 FontLoader.loadFont(fontName)
             }
-            */
-            FontLoader.loadFont(fontName)
+            return UIFont(name: font.rawValue, size: size)!
         }
-        return UIFont(name: font.rawValue, size: size)!
+        
     }
     
-}
-
-public extension UIImage
-{
-    public static func icon(from font: Fonts, code: String, imageSize: CGSize, ofSize size: CGFloat) -> UIImage
+    public extension UIImage
     {
-        let drawText = String.getIcon(from: font, code: code)
-        
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, 0)
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = NSTextAlignment.center
-        
-		drawText!.draw(in: CGRect(x:0, y:0, width:imageSize.width, height:imageSize.height), withAttributes: [NSFontAttributeName : UIFont.icon(from: font, ofSize: size), NSParagraphStyleAttributeName: paragraphStyle])
-        
-		let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image!
+        public static func icon(from font: Fonts, code: String, imageSize: CGSize, ofSize size: CGFloat) -> UIImage
+        {
+            let drawText = String.getIcon(from: font, code: code)
+            
+            UIGraphicsBeginImageContextWithOptions(imageSize, false, 0)
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = NSTextAlignment.center
+            
+            drawText!.draw(in: CGRect(x:0, y:0, width:imageSize.width, height:imageSize.height), withAttributes: [NSFontAttributeName : UIFont.icon(from: font, ofSize: size), NSParagraphStyleAttributeName: paragraphStyle])
+            
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            return image!
+        }
     }
-}
+#endif
 
 public extension String {
     
@@ -204,7 +212,10 @@ func getAttributedString(_ text: NSString, ofSize size: CGFloat) -> NSAttributed
         if let _ = fontArr[fontCode] {
             attributedString.replaceCharacters(in: substringRange, with: String.getIcon(from: fontType, code: fontCode)!)
             let newRange = NSRange(location: substringRange.location, length: 1)
-            attributedString.addAttribute(NSFontAttributeName, value: UIFont.icon(from: fontType, ofSize: size), range: newRange)
+            #if os(macOS)
+            #else
+                attributedString.addAttribute(NSFontAttributeName, value: UIFont.icon(from: fontType, ofSize: size), range: newRange)
+            #endif
         }
     }
     
@@ -277,55 +288,59 @@ func GetFontTypeWithSelectedIcon(_ icon: String) -> Fonts {
 // Extensions
 
 
-public extension UILabel {
-    func parseIcon() {
-        let text = SwiftIconFont.replace(withText: (self.text! as NSString))
-        self.attributedText = getAttributedString(text, ofSize: self.font!.pointSize)
+#if os(macOS)
+
+#else
+    public extension UILabel {
+        func parseIcon() {
+            let text = SwiftIconFont.replace(withText: (self.text! as NSString))
+            self.attributedText = getAttributedString(text, ofSize: self.font!.pointSize)
+        }
     }
-}
-
-public extension UITextView {
-    func parseIcon() {
-        //let text = replace(withText: (self.text! as NSString))
-        let text = SwiftIconFont.replace(withText: "")
-        self.attributedText = getAttributedString(text, ofSize: self.font!.pointSize)
+    
+    public extension UITextView {
+        func parseIcon() {
+            //let text = replace(withText: (self.text! as NSString))
+            let text = SwiftIconFont.replace(withText: "")
+            self.attributedText = getAttributedString(text, ofSize: self.font!.pointSize)
+        }
     }
-}
-
-
-public extension UITextField {
-    func parseIcon() {
-        let text = SwiftIconFont.replace(withText: (self.text! as NSString))
-        self.attributedText = getAttributedString(text, ofSize: self.font!.pointSize)
+    
+    
+    public extension UITextField {
+        func parseIcon() {
+            let text = SwiftIconFont.replace(withText: (self.text! as NSString))
+            self.attributedText = getAttributedString(text, ofSize: self.font!.pointSize)
+        }
     }
-}
-
-public extension UIButton {
-    func parseIcon() {
-        let text = replace(withText: (self.currentTitle)! as NSString)
-        self.setAttributedTitle(getAttributedString(text, ofSize: (self.titleLabel?.font!.pointSize)!), for: UIControlState())
+    
+    public extension UIButton {
+        func parseIcon() {
+            let text = replace(withText: (self.currentTitle)! as NSString)
+            self.setAttributedTitle(getAttributedString(text, ofSize: (self.titleLabel?.font!.pointSize)!), for: UIControlState())
+        }
     }
-}
-
-public extension UIBarButtonItem {
-    func icon(from font: Fonts, code: String, ofSize size: CGFloat){
-        var textAttributes: [String: AnyObject] = [NSFontAttributeName: UIFont.icon(from: font, ofSize: size)]
-        let currentTextAttributes: [String: AnyObject]? = self.titleTextAttributes(for: UIControlState()) as [String : AnyObject]?
-        
-        if currentTextAttributes != nil {
-            for (key, value) in currentTextAttributes! {
-                if key != "NSFont" {
-                    textAttributes[key] = value
+    
+    public extension UIBarButtonItem {
+        func icon(from font: Fonts, code: String, ofSize size: CGFloat){
+            var textAttributes: [String: AnyObject] = [NSFontAttributeName: UIFont.icon(from: font, ofSize: size)]
+            let currentTextAttributes: [String: AnyObject]? = self.titleTextAttributes(for: UIControlState()) as [String : AnyObject]?
+            
+            if currentTextAttributes != nil {
+                for (key, value) in currentTextAttributes! {
+                    if key != "NSFont" {
+                        textAttributes[key] = value
+                    }
                 }
             }
+            self.setTitleTextAttributes(textAttributes, for: UIControlState())
+            self.title = String.getIcon(from: font, code: code)
         }
-        self.setTitleTextAttributes(textAttributes, for: UIControlState())
-        self.title = String.getIcon(from: font, code: code)
     }
-}
-
-public extension UITabBarItem {
-    func icon(from font: Fonts, code: String, imageSize: CGSize, ofSize size: CGFloat) {
-        self.image = UIImage.icon(from: font, code: code, imageSize: imageSize, ofSize: size)
+    
+    public extension UITabBarItem {
+        func icon(from font: Fonts, code: String, imageSize: CGSize, ofSize size: CGFloat) {
+            self.image = UIImage.icon(from: font, code: code, imageSize: imageSize, ofSize: size)
+        }
     }
-}
+#endif

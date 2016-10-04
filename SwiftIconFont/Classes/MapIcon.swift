@@ -6,7 +6,11 @@
 //  Copyright © 2016 Sedat Gökbek ÇİFTÇİ. All rights reserved.
 //
 
-import UIKit
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+#endif
 
 public let mapIconArr: [String: String] = [
     "map.icon.abseiling":"\u{e800}",
