@@ -34,7 +34,6 @@ public enum Fonts: String {
             return "map-icons"
         case .MaterialIcon:
             return "Material Icons"
-        }
         case .MaterialIconic:
             return "Material Iconic"
         }
@@ -96,7 +95,6 @@ public extension String {
             return fontOcticon(code)
         case .Themify:
             return fontThemifyIcon(code)
-        }
         case .MaterialIconic:
             return fontMaterialIconic(code)
         }
