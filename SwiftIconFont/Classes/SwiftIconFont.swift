@@ -16,6 +16,7 @@ public enum Fonts: String {
     case Themify = "themify"
     case MapIcon = "map-icons"
     case MaterialIcon = "MaterialIcons-Regular"
+    case MaterialIconic = "Material-Design-Iconic"
     
     var fontName: String {
         switch self {
@@ -33,6 +34,9 @@ public enum Fonts: String {
             return "map-icons"
         case .MaterialIcon:
             return "Material Icons"
+        }
+        case .MaterialIconic:
+            return "Material Iconic"
         }
     }
     
@@ -93,6 +97,9 @@ public extension String {
         case .Themify:
             return fontThemifyIcon(code)
         }
+        case .MaterialIconic:
+            return fontMaterialIconic(code)
+        }
     }
     
     public static func fontAwesomeIcon(_ code: String) -> String? {
@@ -144,6 +151,13 @@ public extension String {
         }
         return nil
     }
+
+    public static func fontMaterialIconic(_ code: String) -> String? {
+            if let icon = materialIconicArr[code] {
+                return icon
+            }
+            return nil
+        }
 }
 
 func replace(withText string: NSString) -> NSString {
@@ -199,6 +213,9 @@ func getAttributedString(_ text: NSString, ofSize size: CGFloat) -> NSAttributed
         } else if fontPrefix == "ma" {
             fontType = Fonts.MaterialIcon
             fontArr = materialIconArr
+        } else if fontPrefix == "zdmi" {
+            fontType = Fonts.MaterialIconic
+            fontArr = materialIconicArr
         }
         
         if let _ = fontArr[fontCode] {
@@ -267,7 +284,9 @@ func GetFontTypeWithSelectedIcon(_ icon: String) -> Fonts {
             fontType = Fonts.MapIcon
         } else if fontPrefix == "ma" {
             fontType = Fonts.MaterialIcon
-        }
+        } else if fontPrefix == "zdmi" {
+             fontType = Fonts.MaterialIconic
+         }
     }
     
     
